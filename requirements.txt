@@ -1,1 +1,2 @@
-Retro==2.9.0
+gym-retro==0.8.0
+stable_baselines3==0.10.0
