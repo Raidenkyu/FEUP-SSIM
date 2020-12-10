@@ -1,15 +1,5 @@
 level_max_x = 0x2560
 
-function clip(v, min, max)
-    if v < min then
-        return min
-    elseif v > max then
-        return max
-    else
-        return v
-    end
-end
-
 prev_lives = 3
 
 function done()
@@ -19,20 +9,6 @@ function done()
     if calc_progress(data) >= 1 then return true end
 
     return false
-end
-
-offset_x = nil
-end_x = nil
-
-function calc_progress(data)
-    if offset_x == nil then
-        offset_x = -data.x
-        local key = string.format("zone=%d,act=%d", data.zone, data.act)
-        end_x = level_max_x - data.x
-    end
-
-    local cur_x = clip(data.x + offset_x, 0, end_x)
-    return cur_x / end_x
 end
 
 prev_progress = 0
@@ -51,3 +27,29 @@ function reward()
     end
     return reward
 end
+
+function clip(v, min, max)
+    if v < min then
+        return min
+    elseif v > max then
+        return max
+    else
+        return v
+    end
+end
+
+offset_x = nil
+end_x = nil
+
+function calc_progress(data)
+    if offset_x == nil then
+        offset_x = -data.x
+        local key = string.format("zone=%d,act=%d", data.zone, data.act)
+        end_x = level_max_x - data.x
+    end
+
+    local cur_x = clip(data.x + offset_x, 0, end_x)
+    return cur_x / end_x
+end
+
+
