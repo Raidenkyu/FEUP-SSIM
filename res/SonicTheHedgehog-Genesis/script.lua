@@ -9,7 +9,13 @@ function Done()
 
     if Calc_progress(data) >= 1 then is_done = true end
 
-    if is_done then print("DONE!") end
+    if Is_stuck(data) then is_done = true end
+
+    -- for debugging
+    if is_done then
+        print("Frame_count: " .. Frame_count)
+        print("DONE!")
+    end
 
     return is_done
 end
@@ -57,4 +63,26 @@ function Calc_progress(data)
     return ret_value
 end
 
+Max_x = 0
+Frames_since_last_max = 0
+
+-- returns true if the agent has not progressed in a while
+function Is_stuck(data)
+
+    local new_max = math.max(Max_x, data.x + Offset_x)
+
+    if new_max > Max_x then
+        Frames_since_last_max = 0
+    else
+        Frames_since_last_max = Frames_since_last_max + 1
+    end
+    Max_x = new_max
+
+    local is_stuck = false
+    if Frames_since_last_max > 1000 then
+        is_stuck = true
+    end
+
+    return is_stuck
+end
 
