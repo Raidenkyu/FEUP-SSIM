@@ -3,12 +3,21 @@ Level_max_x = 0x2560
 Prev_lives = 3
 
 function Done()
-    if data.lives < Prev_lives then return true end
+    local is_done = false
+    if data.lives < Prev_lives then is_done = true end
     Prev_lives = data.lives
 
-    if Calc_progress(data) >= 1 then return true end
+    if Calc_progress(data) >= 1 then is_done = true end
 
-    return false
+    if Is_stuck(data) then is_done = true end
+
+    -- for debugging
+    if is_done then
+        print("Frame_count: " .. Frame_count)
+        print("DONE!")
+    end
+
+    return is_done
 end
 
 Prev_progress = 0
@@ -50,7 +59,30 @@ function Calc_progress(data)
     end
 
     local cur_x = Normalize(data.x + Offset_x, 0, End_x)
-    return cur_x / End_x
+    local ret_value = cur_x / End_x
+    return ret_value
 end
 
+Max_x = 0
+Frames_since_last_max = 0
+
+-- returns true if the agent has not progressed in a while
+function Is_stuck(data)
+
+    local new_max = math.max(Max_x, data.x + Offset_x)
+
+    if new_max > Max_x then
+        Frames_since_last_max = 0
+    else
+        Frames_since_last_max = Frames_since_last_max + 1
+    end
+    Max_x = new_max
+
+    local is_stuck = false
+    if Frames_since_last_max > 1000 then
+        is_stuck = true
+    end
+
+    return is_stuck
+end
 
