@@ -1,9 +1,9 @@
 {
   "done": {
-    "script": "lua:contest_done"
+    "script": "lua:done"
   },
   "reward": {
-    "script": "lua:contest_reward"
+    "script": "lua:reward"
   },
   "scripts": [
     "script.lua"

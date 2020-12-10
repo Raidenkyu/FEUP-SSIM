@@ -12,7 +12,7 @@ end
 
 prev_lives = 3
 
-function contest_done()
+function done()
     if data.lives < prev_lives then return true end
     prev_lives = data.lives
 
@@ -39,7 +39,7 @@ prev_progress = 0
 frame_count = 0
 frame_limit = 18000
 
-function contest_reward()
+function reward()
     frame_count = frame_count + 1
     local progress = calc_progress(data)
     local reward = (progress - prev_progress) * 9000
