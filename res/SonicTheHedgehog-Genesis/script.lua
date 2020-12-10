@@ -3,12 +3,15 @@ Level_max_x = 0x2560
 Prev_lives = 3
 
 function Done()
-    if data.lives < Prev_lives then return true end
+    local is_done = false
+    if data.lives < Prev_lives then is_done = true end
     Prev_lives = data.lives
 
-    if Calc_progress(data) >= 1 then return true end
+    if Calc_progress(data) >= 1 then is_done = true end
 
-    return false
+    if is_done then print("DONE!") end
+
+    return is_done
 end
 
 Prev_progress = 0
@@ -50,7 +53,8 @@ function Calc_progress(data)
     end
 
     local cur_x = Normalize(data.x + Offset_x, 0, End_x)
-    return cur_x / End_x
+    local ret_value = cur_x / End_x
+    return ret_value
 end
 
 
