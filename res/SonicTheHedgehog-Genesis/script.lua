@@ -81,9 +81,7 @@ function Is_stuck(data)
     Max_x = new_max
 
     local is_stuck = false
-    if Frames_since_last_max > 1000 then
-        is_stuck = true
-    end
+    if Frames_since_last_max > 1000 then is_stuck = true end
 
     return is_stuck
 end
