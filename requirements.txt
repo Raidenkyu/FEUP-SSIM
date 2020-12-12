@@ -1,2 +1,4 @@
 gym-retro==0.8.0
 stable_baselines3==0.10.0
+torch==1.7.0
+optuna==2.3.0

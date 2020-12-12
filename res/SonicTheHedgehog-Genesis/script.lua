@@ -32,7 +32,8 @@ function Reward()
 
     -- bonus for beating level quickly
     if progress >= 1 then
-        reward = reward + (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 1000
+        reward = reward + (1 - Normalize(Frame_count / Frame_limit, 0, 1)) *
+                     1000
     end
     return reward
 end
@@ -79,9 +80,7 @@ function Is_stuck(data)
     Max_x = new_max
 
     local is_stuck = false
-    if Frames_since_last_max > 1000 then
-        is_stuck = true
-    end
+    if Frames_since_last_max > 1000 then is_stuck = true end
 
     return is_stuck
 end
