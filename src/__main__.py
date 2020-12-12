@@ -5,6 +5,8 @@ from stable_baselines3 import PPO
 from stable_baselines3.ppo.policies import CnnPolicy
 from stable_baselines3.common.vec_env import VecVideoRecorder, DummyVecEnv
 
+from hyperparams import read_hyperparameters
+
 if len(sys.argv) < 2:
     print('Error: arguments missing.')
     print('Usage: python3 src <auto|cpu>  <integer>.')
@@ -14,6 +16,7 @@ video_folder = 'logs/videos/'
 video_length = 10000000
 model_name = "ppo_sonic"
 device = sys.argv[1]
+params_key = "sonic"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,7 +37,8 @@ try:
     model = PPO.load(path='models/' + model_name, env=env, device=device)
     print("Existent model loaded.")
 except:
-    model = PPO(policy=CnnPolicy, env=env, verbose=1, device=device)
+    hyperparams = read_hyperparameters(params_key)
+    model = PPO(env=env, verbose=1, device=device, **hyperparams)
     print("No saved model found. Creating a new one.")
 
 model.learn(total_timesteps=int(sys.argv[2]))
