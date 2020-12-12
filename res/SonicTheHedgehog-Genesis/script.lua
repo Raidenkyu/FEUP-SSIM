@@ -9,11 +9,12 @@ function Done()
 
     if Calc_progress(data) >= 1 then is_done = true end
 
-    if Is_stuck(data) then is_done = true end
+    -- if Is_stuck(data) then is_done = true end
 
     -- for debugging
     if is_done then
         print("Frame_count: " .. Frame_count)
+        print("Max_x: " .. Max_x)
         print("DONE!")
     end
 
@@ -26,12 +27,13 @@ Frame_limit = 18000
 
 function Reward()
     Frame_count = Frame_count + 1
-    local progress = Calc_progress(data)
-    local reward = (progress - Prev_progress) * 9000
-    Prev_progress = progress
+    local new_progress = Calc_progress(data)
+    local reward = (new_progress - Prev_progress) * 9000
+    Prev_progress = new_progress
 
     -- bonus for beating level quickly
-    if progress >= 1 then
+    if new_progress >= 1 then
+        print("BONUS!")
         reward = reward + (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 1000
     end
     return reward
