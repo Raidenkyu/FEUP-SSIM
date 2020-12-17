@@ -9,13 +9,11 @@ function Done()
 
     if Calc_progress(data) >= 1 then is_done = true end
 
-    -- if Is_stuck(data) then is_done = true end
+    -- TODO: maybe add a case for when stuck, not yet sure if that helps
 
     -- for debugging
     if is_done then
-        print("Frame_count: " .. Frame_count)
-        print("Max_x: " .. Max_x)
-        print("DONE!")
+        Print_state("DONE!")
     end
 
     return is_done
@@ -24,18 +22,26 @@ end
 Prev_progress = 0
 Frame_count = 0
 Frame_limit = 18000
+Total_reward = 0
 
 function Reward()
 
     -- TODO: consider scenario in which the agent died by getting stuck
     if data.lives < Prev_lives then
         print("IN REWARD AFTER DEAD: " .. data.lives)
-        return -9000
+        return -Total_reward - 0.5
+    end
+
+    -- TODO: this is just to incentivise faster runs, needs to be reviewed, may be preventing passing the loop
+    if Is_stuck(data) then
+        return -0.5
     end
 
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
-    local reward = (new_progress - Prev_progress) * 9000
+    local reward = (new_progress - Prev_progress) * 100
+    Total_reward = Total_reward + reward
+
     Prev_progress = new_progress
 
     -- bonus for beating level quickly
@@ -93,3 +99,17 @@ function Is_stuck(data)
     return is_stuck
 end
 
+-- Print functions, for debugging
+function Print_state(msg)
+    Print_tab("=================================")
+    Print_tab(msg)
+    Print_tab("Frame_count: " .. Frame_count)
+    Print_tab("Progress: " .. (Calc_progress(data) * 100) .. "%" )
+    Print_tab("Total_reward: " .. Total_reward)
+    Print_tab("Lives: " .. data.lives)
+    Print_tab("=================================")
+end
+
+function Print_tab(msg)
+    print("\t\t\t\t\t\t\t\t" .. msg)
+end
