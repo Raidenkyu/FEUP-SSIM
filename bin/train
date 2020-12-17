@@ -6,4 +6,4 @@ if [ $# -ne "1" ]; then
   exit 0
 fi
 
-python3 src/test.py auto "$1"
+python3 src/train.py auto "$1"
