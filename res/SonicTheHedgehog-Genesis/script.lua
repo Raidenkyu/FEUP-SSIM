@@ -3,9 +3,9 @@ Level_max_x = 0x2560
 Prev_lives = 3
 
 function Done()
+    -- TODO: change is_done to an enum (dead, stuck, alive, etc), to use in reward function
     local is_done = false
     if data.lives < Prev_lives then is_done = true end
-    Prev_lives = data.lives
 
     if Calc_progress(data) >= 1 then is_done = true end
 
@@ -26,6 +26,12 @@ Frame_count = 0
 Frame_limit = 18000
 
 function Reward()
+
+    -- TODO: consider scenario in which the agent died by getting stuck
+    if data.lives < Prev_lives then
+        print("IN REWARD AFTER DEAD: " .. data.lives);
+    end
+
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
     local reward = (new_progress - Prev_progress) * 9000
