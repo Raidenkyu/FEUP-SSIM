@@ -29,7 +29,8 @@ function Reward()
 
     -- TODO: consider scenario in which the agent died by getting stuck
     if data.lives < Prev_lives then
-        print("IN REWARD AFTER DEAD: " .. data.lives);
+        print("IN REWARD AFTER DEAD: " .. data.lives)
+        return -9000
     end
 
     Frame_count = Frame_count + 1
