@@ -1,12 +1,37 @@
+import os
+import sys
+import numpy as np
+import time
+import optuna
+
+from optuna.integration.skopt import SkoptSampler
+from optuna.pruners import BasePruner, MedianPruner, SuccessiveHalvingPruner
+from optuna.samplers import BaseSampler, RandomSampler, TPESampler
+
+from stable_baselines3 import PPO
+from stable_baselines3.ppo.policies import CnnPolicy
+
+from torch import nn as nn
 from typing import Any, Dict
 
-import optuna
-from torch import nn as nn
-
 from utils import linear_schedule
+from hyperparams import read_hyperparameters
+from environment import load_environment
+
+seed = 0
+n_startup_trials = 1000
+n_evaluations = 1
+n_trials = 1000
+n_jobs = 1
+
+sampler_name = "tpe"
+pruner_name = "median"
+
+n_timesteps = 0
+device = 'auto'
 
 
-def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
+def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     """
     Sampler for PPO2 hyperparams.
     :param trial:
@@ -39,7 +64,6 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     activation_fn = trial.suggest_categorical(
         "activation_fn", ["tanh", "relu"])
 
-    # TODO: account when using multiple envs
     if batch_size > n_steps:
         batch_size = n_steps
 
@@ -73,3 +97,139 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
             ortho_init=ortho_init,
         ),
     }
+
+
+def create_sampler(sampler_method: str) -> BaseSampler:
+    # n_warmup_steps: Disable pruner until the trial reaches the given number of step.
+    if sampler_method == "random":
+        sampler = RandomSampler(seed=seed)
+    elif sampler_method == "tpe":
+        # TODO: try with multivariate=True
+        sampler = TPESampler(
+            n_startup_trials=n_startup_trials, seed=seed)
+    elif sampler_method == "skopt":
+        # cf https://scikit-optimize.github.io/#skopt.Optimizer
+        # GP: gaussian process
+        # Gradient boosted regression: GBRT
+        sampler = SkoptSampler(
+            skopt_kwargs={"base_estimator": "GP", "acq_func": "gp_hedge"})
+    else:
+        raise ValueError(f"Unknown sampler: {sampler_method}")
+    return sampler
+
+
+def create_pruner(pruner_method: str) -> BasePruner:
+    if pruner_method == "halving":
+        pruner = SuccessiveHalvingPruner(
+            min_resource=1, reduction_factor=4, min_early_stopping_rate=0)
+    elif pruner_method == "median":
+        pruner = MedianPruner(
+            n_startup_trials=n_startup_trials, n_warmup_steps=n_evaluations // 3)
+    elif pruner_method == "none":
+        # Do not prune
+        pruner = MedianPruner(
+            n_startup_trials=n_trials, n_warmup_steps=n_evaluations)
+    else:
+        raise ValueError(f"Unknown pruner: {pruner_method}")
+    return pruner
+
+
+def optimize_agent(trial):
+    """ Train the model and optimise
+        Optuna maximises the negative log likelihood, so we
+        need to negate the reward here
+    """
+    hyperparams = ppo_params(trial)
+    env = load_environment()
+
+    model = PPO(policy=CnnPolicy, env=env, verbose=1,
+                device=device, **hyperparams)
+    model.learn(n_timesteps)
+
+    rewards = []
+    n_episodes, reward_sum = 0, 0.0
+
+    obs = env.reset()
+    while n_episodes < 4:
+        action, _ = model.predict(obs)
+        obs, reward, done, _ = env.step(action)
+        reward_sum += reward
+
+        if done:
+            rewards.append(reward_sum)
+            reward_sum = 0.0
+            n_episodes += 1
+            obs = env.reset()
+
+    last_reward = np.mean(rewards)
+    trial.report(last_reward, n_episodes)
+
+    env.close()
+    return last_reward
+
+
+def hyperparameters_optimization() -> None:
+    sampler = create_sampler(sampler_name)
+    pruner = create_pruner(pruner_name)
+
+    print(f"Sampler: {sampler_name} - Pruner: {pruner_name}")
+
+    global study_name
+    global study_storage
+
+    study_name = "optimizer_study"
+    study_storage = "study_storage"
+
+    study = optuna.create_study(
+        sampler=sampler,
+        pruner=pruner,
+        storage=None,
+        study_name=study_name,
+        load_if_exists=True,
+        direction="maximize",
+    )
+
+    try:
+        study.optimize(optimize_agent, n_trials=n_trials,
+                       n_jobs=n_jobs)
+    except KeyboardInterrupt:
+        pass
+
+    print("Number of finished trials: ", len(study.trials))
+
+    print("Best trial:")
+    trial = study.best_trial
+
+    print("Value: ", trial.value)
+
+    print("Params: ")
+    for key, value in trial.params.items():
+        print(f"    {key}: {value}")
+
+    report_name = (
+        f"report_sonic_{n_trials}-trials-{n_timesteps}"
+        f"-{sampler_name}-{pruner_name}_{int(time.time())}.csv"
+    )
+
+    log_path = os.path.join("logs/reports", report_name)
+
+    print(f"Writing report to {log_path}")
+
+    # Write report
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    study.trials_dataframe().to_csv(log_path)
+
+
+def optimizer(dev, timesteps):
+    global device
+    global n_timesteps
+
+    device = dev
+    n_timesteps = timesteps
+    hyperparameters_optimization()
+
+
+if __name__ == "__main__":
+    device = sys.argv[1]
+    n_timesteps = int(sys.argv[2])
+    hyperparameters_optimization()

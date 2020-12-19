@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ $# -ne "1" ]; then
+  echo "Error: Number of steps missing."
+  echo "Usage: bin/train <integer>"
+  exit 0
+fi
+
+python3 src/optimizer.py auto "$1"
