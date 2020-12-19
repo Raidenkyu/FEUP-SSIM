@@ -33,9 +33,9 @@ function Reward()
     end
 
     -- TODO: this is just to incentivise faster runs, needs to be reviewed, may be preventing passing the loop
-    if Is_stuck(data) then
-        return -0.5
-    end
+    -- if Is_stuck(data) then
+    --     return -0.5
+    -- end
 
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)

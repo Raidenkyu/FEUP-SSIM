@@ -1,6 +1,6 @@
 sonic:
   policy: 'CnnPolicy'
-  n_steps: 256 # este valor parece não mudar assim que começa o learning, deve ficar associado ao modelo
+  n_steps: 256
   n_epochs: 4
   batch_size: 256
   learning_rate: lin_2.5e-4
