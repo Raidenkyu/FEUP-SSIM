@@ -2,7 +2,7 @@ import sys
 from stable_baselines3 import PPO
 from stable_baselines3.ppo.policies import CnnPolicy
 
-from hyperparams import read_hyperparameters
+from hyperparams.parser import read_hyperparameters
 from environment import load_environment
 
 params_key = "sonic"

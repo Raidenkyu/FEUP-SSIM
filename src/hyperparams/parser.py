@@ -5,7 +5,7 @@ from pprint import pprint
 from typing import Any, Dict, Tuple
 from stable_baselines3.common.utils import constant_fn
 
-from utils import linear_schedule
+from hyperparams.scheduler import linear_schedule
 
 
 def preprocess_schedules(hyperparams: Dict[str, Any]) -> Dict[str, Any]:

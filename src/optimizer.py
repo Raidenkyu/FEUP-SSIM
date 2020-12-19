@@ -14,8 +14,8 @@ from stable_baselines3.ppo.policies import CnnPolicy
 from torch import nn as nn
 from typing import Any, Dict
 
-from utils import linear_schedule
-from hyperparams import read_hyperparameters
+from hyperparams.scheduler import linear_schedule
+from hyperparams.parser import read_hyperparameters
 from environment import load_environment
 
 seed = 0
