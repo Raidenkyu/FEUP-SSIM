@@ -32,11 +32,6 @@ device = 'auto'
 
 
 def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
-    """
-    Sampler for PPO2 hyperparams.
-    :param trial:
-    :return:
-    """
     batch_size = trial.suggest_categorical(
         "batch_size", [8, 16, 32, 64, 128, 256, 512])
     n_steps = trial.suggest_categorical(
