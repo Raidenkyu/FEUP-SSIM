@@ -1,20 +1,21 @@
 import gym
 import numpy as np
 
+DOWN = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+LEFT = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+RIGHT = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+JUMP = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+JUMP_LEFT = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+JUMP_RIGHT = [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+NOP = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+actions = [DOWN, LEFT, RIGHT, JUMP, JUMP_LEFT, JUMP_RIGHT, NOP]
+
 
 class SonicEnvWrapper(gym.ActionWrapper):
     def __init__(self, env):
         super(SonicEnvWrapper, self).__init__(env)
-        buttons = ["B", "A", "MODE", "START", "UP",
-                   "DOWN", "LEFT", "RIGHT", "C", "Y", "X", "Z"]
-        actions = [['LEFT'], ['RIGHT'], ['LEFT', 'DOWN'], [
-            'RIGHT', 'DOWN'], ['DOWN'], ['DOWN', 'B'], ['B']]
-        self._actions = []
-        for action in actions:
-            arr = np.array([False] * 12)
-            for button in action:
-                arr[buttons.index(button)] = True
-            self._actions.append(arr)
+        self._actions = actions
         self.action_space = gym.spaces.Discrete(len(self._actions))
 
     def action(self, a):
