@@ -38,7 +38,7 @@ def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
         "n_steps", [8, 16, 32, 64, 128, 256, 512, 1024, 2048])
     gamma = trial.suggest_categorical(
         "gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])
-    learning_rate = trial.suggest_loguniform("lr", 1e-5, 1)
+    learning_rate = trial.suggest_loguniform("learning_rate", 1e-5, 1)
     lr_schedule = "constant"
     # lr_schedule = trial.suggest_categorical('lr_schedule', ['linear', 'constant'])
     ent_coef = trial.suggest_loguniform("ent_coef", 0.00000001, 0.1)
@@ -50,14 +50,10 @@ def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
         "max_grad_norm", [0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 5])
     vf_coef = trial.suggest_uniform("vf_coef", 0, 1)
     net_arch = trial.suggest_categorical("net_arch", ["small", "medium"])
-    log_std_init = trial.suggest_uniform("log_std_init", -4, 1)
     sde_sample_freq = trial.suggest_categorical(
         "sde_sample_freq", [-1, 8, 16, 32, 64, 128, 256])
     ortho_init = False
     # ortho_init = trial.suggest_categorical('ortho_init', [False, True])
-    # activation_fn = trial.suggest_categorical('activation_fn', ['tanh', 'relu', 'elu', 'leaky_relu'])
-    activation_fn = trial.suggest_categorical(
-        "activation_fn", ["tanh", "relu"])
 
     if batch_size > n_steps:
         batch_size = n_steps
@@ -86,9 +82,6 @@ def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
         "vf_coef": vf_coef,
         "sde_sample_freq": sde_sample_freq,
         "policy_kwargs": dict(
-            log_std_init=log_std_init,
-            net_arch=net_arch,
-            activation_fn=activation_fn,
             ortho_init=ortho_init,
         ),
     }
