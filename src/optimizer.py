@@ -33,7 +33,7 @@ device = 'auto'
 
 def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     batch_size = trial.suggest_categorical(
-        "batch_size", [8, 16, 32, 64, 128, 256, 512])
+        "batch_size", [8, 16, 32, 64, 128, 256])
     n_steps = trial.suggest_categorical(
         "n_steps", [8, 16, 32, 64, 128, 256, 512, 1024, 2048])
     gamma = trial.suggest_categorical(
@@ -66,8 +66,6 @@ def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
         "medium": [dict(pi=[256, 256], vf=[256, 256])],
     }[net_arch]
 
-    activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU,
-                     "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[activation_fn]
 
     return {
         "n_steps": n_steps,
