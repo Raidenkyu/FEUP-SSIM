@@ -4,6 +4,10 @@
       "address": 16776721,
       "type": "|u1"
     },
+    "invencibility": {
+      "address": 16776749,
+      "type": "|u1"
+    },
     "level_end_bonus": {
       "address": 16775126,
       "type": "|u1"
@@ -31,6 +35,10 @@
     "screen_y": {
       "address": 16774916,
       "type": ">u2"
+    },
+    "shield": {
+      "address": 16776748,
+      "type": "|u1"
     },
     "x": {
       "address": 16764936,
