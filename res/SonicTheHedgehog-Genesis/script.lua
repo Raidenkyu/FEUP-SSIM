@@ -24,6 +24,7 @@ Frame_count = 0
 Frame_limit = 18000 -- 36102 is the 10min timeout
 Total_reward = 0
 Max_x = 0
+Ring_count = nil
 
 function Reward()
 
@@ -43,10 +44,26 @@ end
 
 function Get_reward()
 
+    if Ring_count == nil then
+        -- first time
+        if data.rings > 0 then
+            Ring_count = data.rings
+            Print_tab("FIRST RINGS: " .. Ring_count)
+        end
+    elseif Ring_count ~= data.rings then
+        Ring_count = data.rings
+        Print_tab("NEW RINGS: " .. Ring_count)
+    end
+
     Frame_count = Frame_count + 1
-    -- local new_progress = Calc_progress(data)
     local new_progress = Calc_progress_max()
-    local reward = new_progress
+    local reward = new_progress * 10
+
+    if new_progress <= Prev_progress then
+        reward = 0
+    else
+        -- Print_tab("IMPROVED: " .. reward)
+    end
 
     Prev_progress = new_progress
 
