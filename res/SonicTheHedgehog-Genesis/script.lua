@@ -51,6 +51,12 @@ function Get_reward()
             Print_tab("FIRST RINGS: " .. Ring_count)
         end
     elseif Ring_count ~= data.rings then
+        if data.rings < Ring_count then
+            Ring_count = data.rings
+            Print_tab("LOST RINGS: " .. Ring_count)
+            return -0.5
+        end
+
         Ring_count = data.rings
         Print_tab("NEW RINGS: " .. Ring_count)
     end
