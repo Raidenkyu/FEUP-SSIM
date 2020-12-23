@@ -21,16 +21,25 @@ end
 
 Prev_progress = 0
 Frame_count = 0
-Frame_limit = 18000
+Frame_limit = 18000 -- 36102 is the 10min timeout
 Total_reward = 0
 
 function Reward()
 
     -- TODO: consider scenario in which the agent died by getting stuck
     if data.lives < Prev_lives then
-        print("IN REWARD AFTER DEAD: " .. data.lives)
+        Print_tab("DEAD")
         return -Total_reward - 0.5
     end
+
+    local new_reward = Get_reward()
+    Total_reward = Total_reward + new_reward
+
+    return new_reward
+
+end
+
+function Get_reward( ... )
 
     -- TODO: this is just to incentivise faster runs, needs to be reviewed, may be preventing passing the loop
     -- if Is_stuck(data) then
@@ -40,12 +49,11 @@ function Reward()
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
     local reward = (new_progress - Prev_progress) * 100
-    Total_reward = Total_reward + reward
 
     Prev_progress = new_progress
 
     -- bonus for beating level quickly
-    if new_progress >= 1 then
+    if new_progress >= 0.95 then
         print("BONUS!")
         reward = reward + (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 1000
     end
