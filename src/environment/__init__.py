@@ -9,7 +9,7 @@ video_folder = 'logs/videos/'
 video_length = 10000000
 
 
-def load_environment():
+def load_environment(video_name="run"):
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
     retro.data.Integrations.add_custom_path(
@@ -25,6 +25,6 @@ def load_environment():
 
     env = VecVideoRecorder(env, video_folder,
                            record_video_trigger=lambda x: x == 0, video_length=video_length,
-                           name_prefix="test-sonic")
+                           name_prefix=f"{video_name}-sonic")
 
     return env

@@ -34,6 +34,6 @@ if __name__ == "__main__":
     device = sys.argv[1]
     timesteps = int(sys.argv[2])
 
-    env = load_environment()
+    env = load_environment(video_name="train")
     model = train_agent(env, timesteps, device)
     env.close()

@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     device = sys.argv[1]
 
-    env = load_environment()
+    env = load_environment(video_name="test")
     model = load_agent(env, device)
     test_agent(env, model)
     env.close()

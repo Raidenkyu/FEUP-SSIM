@@ -16,7 +16,7 @@ device = sys.argv[1]
 timesteps = int(sys.argv[2])
 params_key = "sonic"
 
-env = load_environment()
+env = load_environment(video_name="run")
 model = train_agent(env, timesteps, device)
 test_agent(env, model)
 env.close
