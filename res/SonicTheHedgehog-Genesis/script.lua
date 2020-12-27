@@ -73,7 +73,7 @@ function Get_reward()
 
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
-    local reward = (new_progress - Prev_progress) * 10
+    local reward = (new_progress - Prev_progress) * 100
 
     Prev_progress = new_progress
 
