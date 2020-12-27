@@ -2,12 +2,22 @@ Level_max_x = 0x2560
 
 Prev_lives = 3
 
+--[[
+ - The reward function needs adjustments
+    - Max(x) may need rework
+    - When dying, the negative reward may need adjustment
+    - When winning, the bonus may need adjustment
+    - 10x multiplier may need adjustment
+]]
+
 function Done()
     -- TODO: change is_done to an enum (dead, stuck, alive, etc), to use in reward function
     local is_done = false
     if data.lives < Prev_lives then is_done = true end
 
     if Calc_progress(data) >= 1 then is_done = true end
+
+    if Frame_count > 35000 then is_done = true end -- TODO: might need to be removed
 
     -- TODO: maybe add a case for when stuck, not yet sure if that helps
 
@@ -31,7 +41,7 @@ function Reward()
     -- TODO: consider scenario in which the agent died by getting stuck
     if data.lives < Prev_lives then
         Print_tab("DEAD")
-        return -Total_reward - 0.5
+        return -2 * Total_reward
     end
 
     Update_max()
@@ -74,9 +84,10 @@ function Get_reward()
     Prev_progress = new_progress
 
     -- bonus for beating level quickly
-    if new_progress >= 0.95 then
-        print("BONUS!")
-        reward = reward + (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 1000
+    if Calc_progress(data) >= 1 then
+        local bonus = (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 10
+        print("BONUS: " .. bonus)
+        reward = reward + bonus
     end
     return reward
 end
