@@ -39,10 +39,10 @@ Ring_count = nil
 function Reward()
 
     -- TODO: consider scenario in which the agent died by getting stuck
-    if data.lives < Prev_lives then
-        Print_tab("DEAD")
-        return -1
-    end
+    -- if data.lives < Prev_lives then
+    --     Print_tab("DEAD")
+    --     return -1
+    -- end
 
     Update_max()
     local new_reward = Get_reward()
@@ -73,7 +73,7 @@ function Get_reward()
 
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
-    local reward = (new_progress - Prev_progress) * 100
+    local reward = (new_progress - Prev_progress) * 90
 
     Prev_progress = new_progress
 
