@@ -41,7 +41,7 @@ function Reward()
     -- TODO: consider scenario in which the agent died by getting stuck
     if data.lives < Prev_lives then
         Print_tab("DEAD")
-        return -2 * Total_reward
+        return -1
     end
 
     Update_max()
@@ -54,41 +54,35 @@ end
 
 function Get_reward()
 
-    if Ring_count == nil then
-        -- first time
-        if data.rings > 0 then
-            Ring_count = data.rings
-            Print_tab("FIRST RINGS: " .. Ring_count)
-        end
-    elseif Ring_count ~= data.rings then
-        if data.rings < Ring_count then
-            Ring_count = data.rings
-            Print_tab("LOST RINGS: " .. Ring_count)
-            return -0.5
-        end
+    -- if Ring_count == nil then
+    --     -- first time
+    --     if data.rings > 0 then
+    --         Ring_count = data.rings
+    --         Print_tab("FIRST RINGS: " .. Ring_count)
+    --     end
+    -- elseif Ring_count ~= data.rings then
+    --     if data.rings < Ring_count then
+    --         Ring_count = data.rings
+    --         Print_tab("LOST RINGS: " .. Ring_count)
+    --         return -0.5
+    --     end
 
-        Ring_count = data.rings
-        Print_tab("NEW RINGS: " .. Ring_count)
-    end
+    --     Ring_count = data.rings
+    --     Print_tab("NEW RINGS: " .. Ring_count)
+    -- end
 
     Frame_count = Frame_count + 1
-    local new_progress = Calc_progress_max()
-    local reward = new_progress * 10
-
-    if new_progress <= Prev_progress then
-        reward = 0
-    else
-        -- Print_tab("IMPROVED: " .. reward)
-    end
+    local new_progress = Calc_progress(data)
+    local reward = (new_progress - Prev_progress) * 10
 
     Prev_progress = new_progress
 
     -- bonus for beating level quickly
-    if Calc_progress(data) >= 1 then
-        local bonus = (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 10
-        print("BONUS: " .. bonus)
-        reward = reward + bonus
-    end
+    -- if Calc_progress(data) >= 1 then
+    --     local bonus = (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 10
+    --     print("BONUS: " .. bonus)
+    --     reward = reward + bonus
+    -- end
     return reward
 end
 
@@ -117,7 +111,7 @@ end
 Offset_x = nil
 End_x = nil
 
--- returns a percentage of completion between [0, 1] (DEPRECATED)
+-- returns a percentage of completion between [0, 1]
 function Calc_progress(data)
     if Offset_x == nil then
         Offset_x = -data.x
@@ -129,7 +123,7 @@ function Calc_progress(data)
     return ret_value
 end
 
--- returns a percentage of completion between [0, 1] (using Max_x)
+-- returns a percentage of completion between [0, 1] (using Max_x) (DEPRECATED)
 function Calc_progress_max()
     local cur_x = Normalize(Max_x, 0, End_x)
     local ret_value = cur_x / End_x

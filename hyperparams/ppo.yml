@@ -1,7 +1,7 @@
 sonic:
   policy: 'CnnPolicy'
-  n_steps: 512
-  n_epochs: 3
+  n_steps: 256
+  n_epochs: 4
   batch_size: 256
   learning_rate: lin_2.5e-4
   clip_range: lin_0.1
