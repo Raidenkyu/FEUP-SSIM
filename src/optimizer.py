@@ -43,7 +43,7 @@ def ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     # lr_schedule = trial.suggest_categorical('lr_schedule', ['linear', 'constant'])
     ent_coef = trial.suggest_loguniform("ent_coef", 0.00000001, 0.1)
     clip_range = trial.suggest_categorical("clip_range", [0.1, 0.2, 0.3, 0.4])
-    n_epochs = trial.suggest_categorical("n_epochs", [1, 5, 10, 20])
+    n_epochs = trial.suggest_categorical("n_epochs", [3, 5, 8])
     gae_lambda = trial.suggest_categorical(
         "gae_lambda", [0.8, 0.9, 0.92, 0.95, 0.98, 0.99, 1.0])
     max_grad_norm = trial.suggest_categorical(
