@@ -76,8 +76,8 @@ function Get_reward()
     local reward = (new_progress - Prev_progress) * 90
 
     if reward < 0 then
-        -- reward = reward / 2
-        reward = 0
+        reward = reward / 2
+        -- reward = 0
     end
 
     Prev_progress = new_progress
