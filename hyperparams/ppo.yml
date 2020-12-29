@@ -5,7 +5,7 @@ sonic:
   batch_size: 128
   learning_rate: lin_2.5e-4
   clip_range: lin_0.1
-  vf_coef: 0.85 # 0.3
+  vf_coef: 0.3
   ent_coef: 0.00001
   gae_lambda: 0.95
   max_grad_norm: 0.5
