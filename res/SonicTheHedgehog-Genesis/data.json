@@ -40,6 +40,10 @@
       "address": 16776748,
       "type": "|u1"
     },
+    "speed_inertia": {
+      "address": 16764948,
+      "type": ">i2"
+    },
     "x": {
       "address": 16764936,
       "type": ">i2"
