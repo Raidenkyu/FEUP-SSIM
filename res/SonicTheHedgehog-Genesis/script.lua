@@ -14,12 +14,13 @@ function Done()
     -- TODO: change is_done to an enum (dead, stuck, alive, etc), to use in reward function
     local is_done = false
     if data.lives < Prev_lives then is_done = true end
+    Prev_lives = data.lives
 
     if Calc_progress(data) >= 1 then is_done = true end
 
-    if Frame_count > 35000 then is_done = true end -- TODO: might need to be removed
+    -- if Frame_count > 35000 then is_done = true end -- TODO: might need to be removed
 
-    -- TODO: maybe add a case for when stuck, not yet sure if that helps
+    -- if Prev_progress > 0.5 and Is_stuck(data) then is_done = true end
 
     -- for debugging
     if is_done then
@@ -44,13 +45,17 @@ function Reward()
     --     return -1
     -- end
 
-    Update_max()
-    local new_reward = Get_reward()
+    -- Update_max()
+    -- local new_reward = Get_reward()
+    local new_reward = Get_reward_simple() * 0.01
     Total_reward = Total_reward + new_reward
 
     return new_reward
 
 end
+
+
+-- GET REWARD VERSION 1.0
 
 function Get_reward()
 
@@ -85,6 +90,38 @@ function Get_reward()
     -- end
     return reward
 end
+
+
+-- GET REWARD VERSION 2.0
+
+Max_speed = 1536 -- value in memory
+
+function Get_reward_speed()
+    Frame_count = Frame_count + 1
+    local reward = Normalize((data.speed_inertia / Max_speed), -1, 1)
+
+    -- Print_tab("Reward: " .. reward)
+
+    return reward
+end
+
+
+-- GET REWARD VERSION 3.0
+
+function Get_reward_simple()
+    Frame_count = Frame_count + 1
+    local progress = Calc_progress(data)
+    local reward = (progress - Prev_progress) * 9000
+    Prev_progress = progress
+
+    -- bonus for beating level quickly
+    if progress >= 1 then
+        Print_tab("BONUS!")
+        reward = reward + (1 - Normalize(Frame_count/Frame_limit, 0, 1)) * 1000
+    end
+    return reward
+end
+
 
 function Update_max()
     local new_max = math.max(Max_x, data.x + Offset_x)
@@ -129,6 +166,29 @@ function Calc_progress_max()
     local ret_value = cur_x / End_x
     return ret_value
 end
+
+
+Stuck_max_x = -1000
+Stuck_frames_since_last_max = 0
+
+-- returns true if the agent has not progressed in a while
+function Is_stuck(data)
+
+    local new_max = math.max(Stuck_max_x, data.x + Offset_x)
+
+    if new_max > Stuck_max_x then
+        Stuck_frames_since_last_max = 0
+    else
+        Stuck_frames_since_last_max = Stuck_frames_since_last_max + 1
+    end
+    Stuck_max_x = new_max
+
+    local is_stuck = false
+    if Stuck_frames_since_last_max > 7200 then is_stuck = true end
+
+    return is_stuck
+end
+
 
 -- Print functions, for debugging
 function Print_state(msg)
