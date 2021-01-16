@@ -11,16 +11,14 @@ Prev_lives = 3
 ]]
 
 function Done()
-    -- TODO: change is_done to an enum (dead, stuck, alive, etc), to use in reward function
+
     local is_done = false
     if data.lives < Prev_lives then is_done = true end
     Prev_lives = data.lives
 
     if Calc_progress(data) >= 1 then is_done = true end
 
-    -- if Frame_count > 35000 then is_done = true end -- TODO: might need to be removed
-
-    -- if Prev_progress > 0.5 and Is_stuck(data) then is_done = true end
+    -- if Is_stuck(data) then is_done = true end
 
     -- for debugging
     if is_done then
@@ -32,7 +30,7 @@ end
 
 Prev_progress = 0
 Frame_count = 0
-Frame_limit = 18000 -- 36102 is the 10min timeout
+Frame_limit = 18000 -- 36000 is around the 10min timeout
 Total_reward = 0
 Max_x = 0
 Ring_count = nil
