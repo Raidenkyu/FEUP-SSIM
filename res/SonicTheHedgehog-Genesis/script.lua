@@ -23,6 +23,7 @@ function Done()
     -- for debugging
     if is_done then
         Print_state("DONE!")
+        print("==================================================================")
     end
 
     return is_done
@@ -43,7 +44,7 @@ function Reward()
     --     return -1
     -- end
 
-    -- Update_max()
+    Print_checkpoint(Calc_progress(data))
     -- local new_reward = Get_reward()
     local new_reward = Get_reward_simple() * 0.01
     Total_reward = Total_reward + new_reward
@@ -193,6 +194,9 @@ function Print_state(msg)
     Print_tab("=================================")
     Print_tab(msg)
     Print_tab("Frame_count: " .. Frame_count)
+    Print_tab("Rings: " .. data.rings)
+    Print_tab("Score: " .. data.score .. "\n")
+
     Print_tab("Progress: " .. (Calc_progress(data) * 100) .. "%" )
     Print_tab("Total_reward: " .. Total_reward)
     Print_tab("Lives: " .. data.lives)
@@ -200,5 +204,33 @@ function Print_state(msg)
 end
 
 function Print_tab(msg)
-    print("\t\t\t\t\t\t\t\t" .. msg)
+    print("\t\t\t\t\t\t" .. msg)
+end
+
+Passed_ramp = false
+Passed_ledge = false
+Passed_loop_before = false
+Passed_loop_after = false
+Passed_ending = false
+
+function Print_checkpoint(progress)
+    if not Passed_ramp and progress > 0.11 then
+        Passed_ramp = true
+        Print_state("RAMP!")
+    end
+
+    if not Passed_ledge and progress > 0.33 then
+        Passed_ledge = true
+        Print_state("LEDGE!")
+    end
+
+    if not Passed_loop_before and progress > 0.57 then
+        Passed_loop_before = true
+        Print_state("BEFORE LOOP!")
+    end
+
+    if not Passed_loop_after and progress > 0.60 then
+        Passed_loop_after = true
+        Print_state("AFTER LOOP!")
+    end
 end
