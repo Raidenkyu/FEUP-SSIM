@@ -11,9 +11,12 @@ function Done()
 
     -- TODO: maybe add a case for when stuck, not yet sure if that helps
 
+    if Is_stuck(data) then is_done = true end
+
     -- for debugging
     if is_done then
         Print_state("DONE!")
+        print("=========================================================================")
     end
 
     return is_done
@@ -39,6 +42,7 @@ function Reward()
 
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
+    Print_checkpoint(new_progress)
     local reward = (new_progress - Prev_progress) * 100
     Total_reward = Total_reward + reward
 
@@ -94,7 +98,7 @@ function Is_stuck(data)
     Max_x = new_max
 
     local is_stuck = false
-    if Frames_since_last_max > 1000 then is_stuck = true end
+    if Frames_since_last_max > 3600 then is_stuck = true end
 
     return is_stuck
 end
@@ -104,12 +108,43 @@ function Print_state(msg)
     Print_tab("=================================")
     Print_tab(msg)
     Print_tab("Frame_count: " .. Frame_count)
-    Print_tab("Progress: " .. (Calc_progress(data) * 100) .. "%" )
+    Print_tab("Rings: " .. data.rings)
+    Print_tab("Score: " .. data.score)
+
+    Print_tab("\nProgress: " .. (Calc_progress(data) * 100) .. "%" )
     Print_tab("Total_reward: " .. Total_reward)
     Print_tab("Lives: " .. data.lives)
     Print_tab("=================================")
 end
 
 function Print_tab(msg)
-    print("\t\t\t\t\t\t\t\t" .. msg)
+    print("\t\t\t\t\t\t" .. msg)
+end
+
+Passed_ramp = false
+Passed_ledge = false
+Passed_loop_before = false
+Passed_loop_after = false
+Passed_ending = false
+
+function Print_checkpoint(progress)
+    if not Passed_ramp and progress > 0.11 then
+        Passed_ramp = true
+        Print_state("RAMP!")
+    end
+
+    if not Passed_ledge and progress > 0.33 then
+        Passed_ledge = true
+        Print_state("LEDGE!")
+    end
+
+    if not Passed_loop_before and progress > 0.58 then
+        Passed_loop_before = true
+        Print_state("BEFORE LOOP!")
+    end
+
+    if not Passed_loop_after and progress > 0.60 then
+        Passed_loop_after = true
+        Print_state("AFTER LOOP!")
+    end
 end
