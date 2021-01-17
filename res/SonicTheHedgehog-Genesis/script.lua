@@ -45,9 +45,9 @@ function Reward()
     -- end
 
     Print_checkpoint(Calc_progress(data))
-    -- local new_reward = Get_reward()
+    local new_reward = Get_reward_punish()
     -- local new_reward = Get_reward_simple() * 0.01
-    local new_reward = Get_reward_speed()
+    -- local new_reward = Get_reward_speed()
     Total_reward = Total_reward + new_reward
 
     return new_reward
@@ -57,24 +57,24 @@ end
 
 -- GET REWARD VERSION 1.0
 
-function Get_reward()
+function Get_reward_punish()
 
-    -- if Ring_count == nil then
-    --     -- first time
-    --     if data.rings > 0 then
-    --         Ring_count = data.rings
-    --         Print_tab("FIRST RINGS: " .. Ring_count)
-    --     end
-    -- elseif Ring_count ~= data.rings then
-    --     if data.rings < Ring_count then
-    --         Ring_count = data.rings
-    --         Print_tab("LOST RINGS: " .. Ring_count)
-    --         return -0.5
-    --     end
+    if Ring_count == nil then
+        -- first time
+        if data.rings > 0 then
+            Ring_count = data.rings
+            -- Print_tab("FIRST RINGS: " .. Ring_count)
+        end
+    elseif Ring_count ~= data.rings then
+        if data.rings < Ring_count then
+            Ring_count = data.rings
+            -- Print_tab("LOST RINGS: " .. Ring_count)
+            return -0.5
+        end
 
-    --     Ring_count = data.rings
-    --     Print_tab("NEW RINGS: " .. Ring_count)
-    -- end
+        Ring_count = data.rings
+        -- Print_tab("NEW RINGS: " .. Ring_count)
+    end
 
     Frame_count = Frame_count + 1
     local new_progress = Calc_progress(data)
@@ -83,11 +83,11 @@ function Get_reward()
     Prev_progress = new_progress
 
     -- bonus for beating level quickly
-    -- if Calc_progress(data) >= 1 then
-    --     local bonus = (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 10
-    --     print("BONUS: " .. bonus)
-    --     reward = reward + bonus
-    -- end
+    if Calc_progress(data) >= 1 then
+        local bonus = (1 - Normalize(Frame_count / Frame_limit, 0, 1)) * 10
+        print("BONUS: " .. bonus)
+        reward = reward + bonus
+    end
     return reward
 end
 
