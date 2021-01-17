@@ -45,9 +45,9 @@ function Reward()
     -- end
 
     Print_checkpoint(Calc_progress(data))
-    local new_reward = Get_reward_punish()
-    -- local new_reward = Get_reward_simple() * 0.01
+    local new_reward = Get_reward_simple() * 0.01
     -- local new_reward = Get_reward_speed()
+    -- local new_reward = Get_reward_punish()
     Total_reward = Total_reward + new_reward
 
     return new_reward

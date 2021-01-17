@@ -1,14 +1,4 @@
-sonic:
-  policy: 'CnnPolicy'
-  n_steps: 256
-  n_epochs: 4
-  batch_size: 256
-  learning_rate: lin_2.5e-4
-  clip_range: lin_0.1
-  vf_coef: 0.5
-  ent_coef: 0.01
-
-# sonic_backup:
+# sonic:
 #   policy: 'CnnPolicy'
 #   n_steps: 256
 #   n_epochs: 4
@@ -17,3 +7,17 @@ sonic:
 #   clip_range: lin_0.1
 #   vf_coef: 0.5
 #   ent_coef: 0.01
+
+
+# hyper params from optimizer
+sonic:
+  policy: 'CnnPolicy'
+  n_steps: 512
+  n_epochs: 5
+  batch_size: 128
+  learning_rate: lin_2e-5
+  clip_range: lin_0.1
+  vf_coef: 0.87
+  ent_coef: 0.000003
+  gamma: 0.9
+  max_grad_norm: 0.3
