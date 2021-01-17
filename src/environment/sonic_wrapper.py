@@ -9,8 +9,8 @@ JUMP_LEFT = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 JUMP_RIGHT = [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 NOP = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-actions = [DOWN, LEFT, RIGHT, JUMP, JUMP_LEFT, JUMP_RIGHT, NOP]
-# actions = [LEFT, RIGHT, JUMP, NOP]
+# actions = [DOWN, LEFT, RIGHT, JUMP, JUMP_LEFT, JUMP_RIGHT, NOP]
+actions = [LEFT, RIGHT, JUMP, NOP]
 
 
 class SonicEnvWrapper(gym.ActionWrapper):
