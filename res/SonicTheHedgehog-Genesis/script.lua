@@ -2,14 +2,6 @@ Level_max_x = 0x2560
 
 Prev_lives = 3
 
---[[
- - The reward function needs adjustments
-    - Max(x) may need rework
-    - When dying, the negative reward may need adjustment
-    - When winning, the bonus may need adjustment
-    - 10x multiplier may need adjustment
-]]
-
 function Done()
 
     local is_done = false
@@ -17,8 +9,6 @@ function Done()
     Prev_lives = data.lives
 
     if Calc_progress(data) >= 1 then is_done = true end
-
-    -- if Is_stuck(data) then is_done = true end
 
     -- for debugging
     if is_done then
@@ -37,12 +27,6 @@ Max_x = 0
 Ring_count = nil
 
 function Reward()
-
-    -- TODO: consider scenario in which the agent died by getting stuck
-    -- if data.lives < Prev_lives then
-    --     Print_tab("DEAD")
-    --     return -1
-    -- end
 
     Print_checkpoint(Calc_progress(data))
     local new_reward = Get_reward_simple() * 0.01
