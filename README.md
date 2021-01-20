@@ -53,7 +53,7 @@ python src/test_sonic.py auto
 ```
 
 ## Run the optimizer
-To run the optimizer. In the first argument is specified if the simulation will run only with CPU, with CUDA (both CPU and GPU, Nvidia specific) or auto (to run with CUDA if detected, otherwise CPU). The second argument is the number of timesteps. To stop, press "CTRL+C" (this changes for other operating systems than Linux) and a report with the hyperparameters and their values will be presented in a csv file located under `logs/reports/`
+To run the optimizer. In the first argument is specified if the simulation will run only with CPU, with CUDA (both CPU and GPU, Nvidia specific) or auto (to run with CUDA if detected, otherwise CPU). The second argument is the number of timesteps. To stop, press "CTRL+C" (this changes for other operating systems than Linux) and a report with the hyperparameters and their values will be presented in a csv file located under `logs/reports/`.
 
 Run in the root of the repository:
 ```shell
